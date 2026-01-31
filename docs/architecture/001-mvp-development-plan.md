@@ -1,7 +1,8 @@
 # ADR-001: MVP Development Plan
 
-**Status**: Accepted
+**Status**: Implemented
 **Date**: 2026-01-31
+**Completed**: 2026-01-31
 **Author**: Claude (AI) with Will Tyler
 
 ## Context
@@ -33,7 +34,7 @@ EftViewer.sln
 | Desktop UI | Avalonia UI / .NET 8 | Mature cross-platform desktop support |
 | MVVM | CommunityToolkit.Mvvm | Source generators, minimal boilerplate |
 | Testing | xUnit | Industry standard, good tooling |
-| WSQ Decode | AFIS.WSQ (deferred) | Best available C# wrapper for NBIS |
+| WSQ Decode | Managed.Wsq (adapted) | Pure C#, no native dependencies, cross-platform |
 
 ---
 
@@ -194,26 +195,23 @@ EftViewer.Desktop/
 
 ---
 
-## Phase 3: WSQ Integration (Fast-Follow)
+## Phase 3: WSQ Integration ✅ COMPLETED
 
-### Decision: Defer WSQ to Post-MVP
+### Decision: Integrated Pure C# Decoder
 
-**Rationale:**
-- No production-ready NuGet package exists
-- Best option (AFIS.WSQ) requires native library integration
-- Core parsing and UI can be validated with placeholder images
-- Reduces MVP scope and risk
+**Implementation:**
+- Adapted [Managed.Wsq](https://github.com/grandchamp/Managed.Wsq) decoder
+- Removed System.Drawing/FreeImage dependencies for cross-platform support
+- Returns raw grayscale pixels, converted to Avalonia WriteableBitmap in UI
 
-**Planned approach:**
-1. Evaluate [AFIS.WSQ](https://github.com/alainrc2005/AFIS.WSQ) wrapper
-2. If suitable: integrate as optional native dependency
-3. If not: wrap NBIS `dwsq` directly via P/Invoke
-4. Graceful fallback: show image dimensions when decode unavailable
+**Source files:**
+- `src/EftViewer.Core/Imaging/WsqDecoder.cs` - Main decoder (adapted)
+- `src/EftViewer.Core/Imaging/WsqHelper.cs` - Helper classes
 
-**Placeholder implementation:**
-- Display "Fingerprint Image" label with extracted metadata
-- Show image dimensions if available in record
-- Show compression type field value
+**Features:**
+- Decodes WSQ-compressed fingerprint images
+- Displays decoded image in UI when fingerprint record selected
+- Shows image dimensions and PPI after decoding
 
 ---
 
@@ -248,21 +246,21 @@ EftViewer.Desktop/
 
 ## Definition of Done (MVP)
 
-- [ ] Solution scaffolded with all projects
-- [ ] EftParser reads Type-1, Type-2, Type-4, Type-14 records
-- [ ] Field dictionary maps common tags to human-readable names
-- [ ] Synthetic test file created and committed
-- [ ] Unit tests pass for parser
-- [ ] Avalonia app opens EFT file via File > Open
-- [ ] TreeView displays record/field hierarchy
-- [ ] Detail view shows field information with human-readable names
-- [ ] Fingerprint records show placeholder (WSQ deferred)
-- [ ] Status bar shows file info and warnings
-- [ ] Builds with no warnings on Windows
-- [ ] CI workflow validates builds
+- [x] Solution scaffolded with all projects
+- [x] EftParser reads Type-1, Type-2, Type-4, Type-14 records
+- [x] Field dictionary maps common tags to human-readable names
+- [x] Synthetic test file created and committed
+- [x] Unit tests pass for parser (24 tests)
+- [x] Avalonia app opens EFT file via File > Open
+- [x] TreeView displays record/field hierarchy
+- [x] Detail view shows field information with human-readable names
+- [x] Fingerprint images decode and display (WSQ implemented!)
+- [x] Status bar shows file info and warnings
+- [x] Builds with no warnings on Windows
+- [x] CI workflow validates builds
 
-### Nice-to-Have (MVP)
-- [ ] PNG export for fingerprint images (requires WSQ)
+### Nice-to-Have (Future)
+- [ ] PNG export for fingerprint images
 
 ---
 
@@ -303,10 +301,32 @@ EftViewer.Desktop/
 
 ---
 
+## Implementation Notes
+
+### Binary Record Parsing
+The initial parser assumed all records used ASCII tagged format. Real ATF EFT files use binary Type-4 records with fixed-length headers. The parser was updated to:
+1. Parse Type-1 CNT field to get expected record types
+2. Use length-based parsing for binary records (Type 3-8)
+3. Properly extract image data from Type-4 binary header format
+
+### WSQ Decoder Integration
+Rather than deferring WSQ to post-MVP, we integrated a pure C# decoder:
+- No NuGet packages exist for WSQ decoding
+- Adapted Managed.Wsq (based on NIST NBIS algorithm)
+- Removed System.Drawing dependency for cross-platform compatibility
+- Decoder returns raw pixels; Avalonia converts to WriteableBitmap
+
+### Testing with Real Files
+- Tested with ATF eForm submission file (16 records, 14 fingerprints)
+- File used ANSI/NIST-ITL 2000 format (version 0400)
+- Binary Type-4 records with WSQ-compressed 800x750 images
+
+---
+
 ## References
 
 - [NIST SP 500-290](https://www.nist.gov/publications/data-format-interchange-fingerprint-facial-other-biometric-information-ansinist-itl-1) - ANSI/NIST-ITL standard
 - [NBIS Software](https://www.nist.gov/services-resources/software/nist-biometric-image-software-nbis) - Reference WSQ implementation
-- [AFIS.WSQ](https://github.com/alainrc2005/AFIS.WSQ) - C# WSQ wrapper
+- [Managed.Wsq](https://github.com/grandchamp/Managed.Wsq) - Pure C# WSQ decoder (source adapted)
 - [Avalonia Documentation](https://docs.avaloniaui.net/)
 - [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)
