@@ -1,49 +1,40 @@
 # Sample EFT Files
 
-This directory is a placeholder for sample Electronic Fingerprint Transmission (EFT) files.
+This directory contains sample Electronic Fingerprint Transmission (EFT) files for testing and demonstration.
 
-## Obtaining Test Files
+## Included Samples
 
-### Option 1: NIST Reference Files (Recommended)
+### nist-type-4-14-flats.eft
 
-The NIST Standard References page includes data samples that may contain ready-to-use ANSI/NIST format files:
+A sample containing both legacy Type-4 and modern Type-14 fingerprint records:
 
-1. Visit [ANSI/NIST-ITL Standard References](https://www.nist.gov/itl/iad/image-group/ansinist-itl-standard-references)
-2. Download `ansi-nist_2011_workshop_files.zip` ("IEPDs, schemas, data samples")
-3. Also try `ansi-nist_character_separated_reference_files.zip` ("30 reference examples")
-4. Extract and look for `.eft`, `.an2`, or `.nist` files
+- **Type-1**: Transaction information (ANSI/NIST-ITL 1-2000 format)
+- **Type-2**: Descriptive text
+- **Type-4**: Legacy grayscale fingerprint images (WSQ compressed)
+- **Type-14**: Variable-resolution fingerprint image
 
-### Option 2: NIST Special Database 300
+Size: 262 KB
 
-SD300 contains fingerprint images from deceased subjects (public domain):
+### nist-type-14-tpcard.eft
 
-1. Visit https://nigos.nist.gov/datasets/sd300/request
-2. Register and request access
-3. Download SD300a (6.4GB, PNG format, 500 ppi)
+A ten-print card sample with Type-14 fingerprint records:
 
-**Note:** SD300 contains PNG images, not packaged EFT files. You would need to use NBIS tools to convert and package them into ANSI/NIST format.
+- **Type-1**: Transaction information
+- **Type-2**: Descriptive text
+- **Type-14**: Multiple fingerprint images with quality metrics (NQM)
 
-### Option 3: Create EFT from PNG using NBIS
+Size: 660 KB
 
-If you have PNG fingerprint images, use [NIST Biometric Image Software (NBIS)](https://www.nist.gov/services-resources/software/nist-biometric-image-software-nbis):
+## Attribution
 
-1. Download NBIS source code from the NIST Biometric Open Source Server
-2. Build the tools (requires C compiler)
-3. Use `cwsq` to convert PNG to WSQ format
-4. Use `an2k` utilities to package into ANSI/NIST format
+These sample files are from the [NIST ANSI/NIST-ITL 2011 Workshop Files](https://www.nist.gov/itl/iad/image-group/ansinist-itl-standard-references), provided by the National Institute of Standards and Technology (NIST).
 
-## Licensing
+As works of the U.S. federal government, these files are in the **public domain** and not subject to copyright (17 U.S.C. § 105).
 
-NIST data is public domain under 15 U.S.C. § 105. Redistribution is permitted with attribution.
+## Additional Test Data
 
-**Required citation for SD300:**
-> Fiumara G, Flanagan P, Grantham J, Bandini B, Ko K, Libert J. NIST Special Database 300: Uncompressed Plain and Rolled Images from Fingerprint Cards. NIST Technical Note 1993. https://doi.org/10.6028/NIST.TN.1993
+For more comprehensive testing, NIST provides additional resources:
 
-## File Format Reference
-
-EFT/ANSI-NIST files use these common extensions:
-- `.eft` - Electronic Fingerprint Transmission
-- `.an2` - ANSI/NIST Type-2 format
-- `.nist` - Generic NIST biometric format
-
-See the project README for more information on the ANSI/NIST-ITL format structure.
+- [ANSI/NIST-ITL Standard References](https://www.nist.gov/itl/iad/image-group/ansinist-itl-standard-references) - More sample files and schemas
+- [NIST Special Database 300](https://www.nist.gov/itl/iad/image-group/nist-special-database-300) - Fingerprint images from cards
+- [NIST Special Database 302](https://www.nist.gov/itl/iad/image-group/nist-special-database-302) - Nail-to-nail fingerprint images

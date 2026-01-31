@@ -91,7 +91,12 @@ Fingerprint images in Type-4 and Type-14 records are typically WSQ compressed (W
 
 ## Sample Files
 
-See `samples/README.md` for links to NIST fingerprint databases that can be used for testing.
+The `samples/` directory contains NIST-provided test files:
+
+- **nist-type-4-14-flats.eft** - Legacy Type-4 and modern Type-14 fingerprint records
+- **nist-type-14-tpcard.eft** - Ten-print card with Type-14 records and quality metrics
+
+See `samples/README.md` for details and links to additional NIST test data.
 
 ## Building from Source
 
