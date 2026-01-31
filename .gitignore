@@ -30,6 +30,9 @@ packages/
 TestResults/
 coverage/
 
+# Publish output
+publish/
+
 # Logs
 *.log
 npm-debug.log*

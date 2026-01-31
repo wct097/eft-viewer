@@ -37,6 +37,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Git Workflow
 
+> ⚠️ **CRITICAL: All PRs target `develop`, NEVER `main`**
+
 **Branch Strategy:**
 - `main` - Buildable milestones only; represents stable releases
 - `develop` - Buildable incremental code; integration branch for ongoing work
@@ -47,14 +49,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `develop` → `main`: **Regular merge** (no squash) to preserve milestone history
 
 **Workflow:**
-1. Create work branch from `develop`
+1. Create work branch from `develop`: `git checkout -b feature/xyz develop`
 2. Develop and commit freely on work branch
-3. Open PR to `develop`, squash merge when ready
-4. Periodically merge `develop` into `main` for milestones
+3. Open PR to `develop`: `gh pr create --base develop`
+4. Squash merge when approved
+5. Periodically merge `develop` into `main` for releases
 
 **Commands:**
 - Use `/save` command for AI-enhanced commits
 - Descriptive commit messages
+
+See [docs/guides/git-workflow.md](docs/guides/git-workflow.md) for detailed workflow documentation.
 
 ## Important Context
 
