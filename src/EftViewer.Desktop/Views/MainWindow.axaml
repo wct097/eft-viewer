@@ -1,0 +1,108 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EftViewer.Desktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+        x:Class="EftViewer.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="{Binding WindowTitle}"
+        Width="1000" Height="600">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <DockPanel>
+        <!-- Menu Bar -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open..." Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}" InputGesture="Alt+F4"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About" IsEnabled="False"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Status Bar -->
+        <Border DockPanel.Dock="Bottom" Background="#F0F0F0" BorderBrush="#CCCCCC" BorderThickness="0,1,0,0" Padding="8,4">
+            <TextBlock Text="{Binding StatusText}" FontSize="12"/>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" MinWidth="150"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*" MinWidth="200"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Tree View (Left Panel) -->
+            <Border Grid.Column="0" BorderBrush="#CCCCCC" BorderThickness="0,0,1,0">
+                <TreeView ItemsSource="{Binding RootNodes}"
+                          SelectedItem="{Binding SelectedNode, Mode=TwoWay}">
+                    <TreeView.ItemTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}">
+                            <TextBlock Text="{Binding DisplayName}" Margin="2"/>
+                        </TreeDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Border>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#E0E0E0"/>
+
+            <!-- Detail View (Right Panel) -->
+            <DockPanel Grid.Column="2" Margin="8">
+                <!-- Image panel (shown when fingerprint record selected) -->
+                <Border DockPanel.Dock="Top"
+                        IsVisible="{Binding HasImageData}"
+                        MinHeight="200"
+                        MaxHeight="400"
+                        Background="#F5F5F5"
+                        BorderBrush="#CCCCCC"
+                        BorderThickness="1"
+                        Margin="0,0,0,8"
+                        CornerRadius="4">
+                    <Grid>
+                        <!-- Actual fingerprint image -->
+                        <Image Source="{Binding FingerprintImage}"
+                               Stretch="Uniform"
+                               IsVisible="{Binding FingerprintImage, Converter={x:Static ObjectConverters.IsNotNull}}"
+                               Margin="8"/>
+
+                        <!-- Loading indicator -->
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    IsVisible="{Binding IsDecodingImage}">
+                            <TextBlock Text="Decoding WSQ..."
+                                       HorizontalAlignment="Center"
+                                       Foreground="#666666"/>
+                        </StackPanel>
+
+                        <!-- Status text overlay at bottom -->
+                        <Border VerticalAlignment="Bottom"
+                                Background="#80000000"
+                                Padding="8,4"
+                                IsVisible="{Binding ImageStatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                            <TextBlock Text="{Binding ImageStatusText}"
+                                       Foreground="White"
+                                       FontSize="11"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Detail Text -->
+                <ScrollViewer>
+                    <TextBlock Text="{Binding DetailText}"
+                               FontFamily="Consolas, Courier New, monospace"
+                               FontSize="13"
+                               TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Window>
