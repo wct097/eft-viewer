@@ -306,14 +306,48 @@ namespace EftViewer.Core.Parsing
 
         /// <summary>
         /// Parse an ASCII record (Type 1, 2, 9+).
+        /// For records with binary data (like Type-14 with image field), we must use
+        /// the length from field X.001 instead of scanning for FS separator.
         /// </summary>
         private EftRecord ParseAsciiRecord(byte[] data, ref int position, int recordIndex)
         {
-            int recordEnd = FindRecordEnd(data, position);
-            if (recordEnd < 0)
+            // First, scan for FS separator (traditional method)
+            int scannedEnd = FindRecordEnd(data, position);
+            if (scannedEnd < 0)
             {
-                recordEnd = data.Length;
+                scannedEnd = data.Length;
                 _warnings.Add($"Record {recordIndex} not terminated with FS separator");
+            }
+
+            // Also try to read the declared length from field X.001
+            int? declaredLength = TryReadRecordLength(data, position);
+
+            int recordEnd;
+            if (declaredLength.HasValue && declaredLength.Value > 0)
+            {
+                int declaredEnd = position + declaredLength.Value - 1; // -1 because length includes the FS
+
+                // Validate: if declared length points beyond scanned end and there's an FS at declared position,
+                // the scanned FS was likely in binary data - use declared length instead
+                if (declaredEnd > scannedEnd && declaredEnd < data.Length && data[declaredEnd] == Separators.FS)
+                {
+                    recordEnd = declaredEnd;
+                }
+                else if (declaredEnd >= data.Length)
+                {
+                    // Declared length exceeds file - use scanned end
+                    recordEnd = scannedEnd;
+                    _warnings.Add($"Record {recordIndex} declared length exceeds file size");
+                }
+                else
+                {
+                    // Use scanned end (declared length might be incorrect, as in synthetic test data)
+                    recordEnd = scannedEnd;
+                }
+            }
+            else
+            {
+                recordEnd = scannedEnd;
             }
 
             int recordLength = recordEnd - position;
@@ -338,6 +372,52 @@ namespace EftViewer.Core.Parsing
             position = recordEnd + 1;
 
             return record;
+        }
+
+        /// <summary>
+        /// Try to read the record length from field X.001 at the start of the record.
+        /// Returns null if unable to parse.
+        /// </summary>
+        private int? TryReadRecordLength(byte[] data, int position)
+        {
+            // Field format: "X.001:length" where X is record type (1-99) and length is decimal
+            // Example: "14.001:42465"
+
+            int pos = position;
+            int end = Math.Min(position + 20, data.Length); // Length field should be within first 20 bytes
+
+            // Skip record type digits
+            while (pos < end && data[pos] >= '0' && data[pos] <= '9')
+                pos++;
+
+            // Expect period
+            if (pos >= end || data[pos] != Separators.Period)
+                return null;
+            pos++;
+
+            // Expect "001"
+            if (pos + 3 > end || data[pos] != '0' || data[pos + 1] != '0' || data[pos + 2] != '1')
+                return null;
+            pos += 3;
+
+            // Expect colon
+            if (pos >= end || data[pos] != Separators.Colon)
+                return null;
+            pos++;
+
+            // Parse length value
+            int lengthStart = pos;
+            while (pos < end && data[pos] >= '0' && data[pos] <= '9')
+                pos++;
+
+            if (pos == lengthStart)
+                return null;
+
+            string lengthStr = Encoding.ASCII.GetString(data, lengthStart, pos - lengthStart);
+            if (int.TryParse(lengthStr, out int length))
+                return length;
+
+            return null;
         }
 
         private EftRecord CreateRecord(int recordType, int recordIndex, List<EftField> fields)

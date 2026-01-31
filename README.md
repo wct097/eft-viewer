@@ -12,6 +12,12 @@ Download `EftViewer-vX.X.X-win-x64.zip`, extract, and run `EftViewer.Desktop.exe
 
 No .NET runtime installation required - the application is self-contained.
 
+## Screenshots
+
+| Type-4 Legacy Fingerprints | Type-14 Ten-Print Card |
+|:---:|:---:|
+| ![Type-4 flats](docs/images/flats-screenshot.png) | ![Type-14 tpcard](docs/images/tpcard-screenshot.png) |
+
 ## Overview
 
 EFT files are used by the ATF, FBI, and other agencies for electronic fingerprint submission. This tool allows users to open, parse, and view the contents of EFT files including:
@@ -23,21 +29,22 @@ EFT files are used by the ATF, FBI, and other agencies for electronic fingerprin
 
 ## Project Status
 
-🚧 **Early Development** - MVP in progress
+**v0.1.0** - Initial release
 
-### MVP Progress
+### Features
 
 - [x] Open and parse EFT file structure
 - [x] Display record hierarchy and metadata fields
-- [ ] Decode and display WSQ-compressed fingerprint images
-- [x] Windows desktop application (basic UI complete)
+- [x] Decode and display WSQ-compressed fingerprint images
+- [x] Support for Type-4 (legacy) and Type-14 fingerprint records
+- [x] Windows desktop application
 
 ### Future Goals
 
-- [ ] WSQ image decoding
 - [ ] PNG export for fingerprint images
 - [ ] macOS/Linux testing
 - [ ] Field validation against ANSI/NIST-ITL spec
+- [ ] Type-10 (face/SMT) and Type-15 (palmprint) support
 
 ## Technology Stack
 
