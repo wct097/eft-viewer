@@ -156,8 +156,8 @@ namespace EftViewer.Core.Parsing
                 case 14:
                     return new FingerprintRecord(recordType, recordIndex, fields);
                 default:
-                    // Unsupported record type - create generic record
-                    var record = new EftRecord(recordType, recordIndex, fields);
+                    // Unsupported record type - create generic record marked as unsupported
+                    var record = new UnsupportedRecord(recordType, recordIndex, fields);
                     _warnings.Add($"Unsupported record type {recordType}");
                     return record;
             }
