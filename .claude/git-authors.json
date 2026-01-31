@@ -1,0 +1,12 @@
+{
+  "human": {
+    "name": "Will Tyler",
+    "email": "will.tyler@gmail.com"
+  },
+  "claude": {
+    "name": "Claude Code Assistant",
+    "email": "claude-code@anthropic.com"
+  },
+  "current": "human",
+  "last_updated": "2026-01-31T15:11:17Z"
+}
