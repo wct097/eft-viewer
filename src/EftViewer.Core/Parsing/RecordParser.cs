@@ -43,12 +43,23 @@ namespace EftViewer.Core.Parsing
                 int fieldNumber = tagResult.Value.FieldNumber;
                 int valueStart = tagResult.Value.ValueStart;
 
-                // Find end of this field (GS or end of record)
-                int fieldEnd = FindFieldEnd(data, valueStart, recordEnd);
-                int valueLength = fieldEnd - valueStart;
-
                 // Determine if this is a binary field
                 bool isBinary = IsBinaryField(recordType, fieldNumber);
+
+                // Find end of this field
+                int fieldEnd;
+                if (isBinary)
+                {
+                    // Binary fields (like image data in field 999) extend to the end of the record
+                    // because binary data can contain GS/FS bytes that would cause false termination
+                    fieldEnd = recordEnd;
+                }
+                else
+                {
+                    // Non-binary fields end at GS separator or end of record
+                    fieldEnd = FindFieldEnd(data, valueStart, recordEnd);
+                }
+                int valueLength = fieldEnd - valueStart;
 
                 // Extract the field value
                 byte[] rawValue = new byte[valueLength];
