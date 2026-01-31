@@ -1,0 +1,56 @@
+name: Release Build
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore EftViewer.sln
+
+      - name: Build
+        run: dotnet build EftViewer.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/EftViewer.Core.Tests/EftViewer.Core.Tests.csproj --configuration Release --no-build --verbosity normal
+
+  # Only run on Windows for now since Desktop app is Windows-primary
+  publish:
+    needs: build
+    runs-on: windows-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish Windows
+        run: dotnet publish src/EftViewer.Desktop/EftViewer.Desktop.csproj --configuration Release --runtime win-x64 --self-contained false --output ./publish/win-x64
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EftViewer-win-x64
+          path: ./publish/win-x64
+          retention-days: 7

@@ -13,21 +13,21 @@ EFT files are used by the ATF, FBI, and other agencies for electronic fingerprin
 
 ## Project Status
 
-🚧 **Early Development**
+🚧 **Early Development** - MVP in progress
 
-### MVP Goals
+### MVP Progress
 
-- [ ] Open and parse EFT file structure
-- [ ] Display record hierarchy and metadata fields
+- [x] Open and parse EFT file structure
+- [x] Display record hierarchy and metadata fields
 - [ ] Decode and display WSQ-compressed fingerprint images
-- [ ] Windows desktop application
+- [x] Windows desktop application (basic UI complete)
 
 ### Future Goals
 
-- [ ] macOS support
-- [ ] Android/iOS mobile apps
+- [ ] WSQ image decoding
+- [ ] PNG export for fingerprint images
+- [ ] macOS/Linux testing
 - [ ] Field validation against ANSI/NIST-ITL spec
-- [ ] Export capabilities
 
 ## Technology Stack
 
@@ -81,12 +81,41 @@ Fingerprint images in Type-4 and Type-14 records are typically WSQ compressed (W
 
 ## Building from Source
 
-*Build instructions will be added as implementation progresses.*
-
 ### Prerequisites
 
-- .NET 8 SDK
-- Visual Studio 2022 or VS Code with C# Dev Kit
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- Visual Studio 2022 or VS Code with C# Dev Kit (optional)
+
+### Build and Run
+
+```bash
+# Clone the repository
+git clone https://github.com/wct097/eft-viewer.git
+cd eft-viewer
+
+# Restore dependencies
+dotnet restore
+
+# Build
+dotnet build
+
+# Run the desktop application
+dotnet run --project src/EftViewer.Desktop
+
+# Run tests
+dotnet test
+```
+
+### Solution Structure
+
+```
+EftViewer.sln
+├── src/
+│   ├── EftViewer.Core/          # Parser library (.NET Standard 2.0)
+│   └── EftViewer.Desktop/       # Avalonia UI application (.NET 8)
+└── tests/
+    └── EftViewer.Core.Tests/    # Unit tests (xUnit)
+```
 
 ## AI-Assisted Development
 
