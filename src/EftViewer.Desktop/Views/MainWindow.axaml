@@ -57,22 +57,42 @@
 
             <!-- Detail View (Right Panel) -->
             <DockPanel Grid.Column="2" Margin="8">
-                <!-- Image placeholder (shown when fingerprint record selected) -->
+                <!-- Image panel (shown when fingerprint record selected) -->
                 <Border DockPanel.Dock="Top"
                         IsVisible="{Binding HasImageData}"
-                        Height="200"
+                        MinHeight="200"
+                        MaxHeight="400"
                         Background="#F5F5F5"
                         BorderBrush="#CCCCCC"
                         BorderThickness="1"
                         Margin="0,0,0,8"
                         CornerRadius="4">
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="🖐️" FontSize="48" HorizontalAlignment="Center"/>
-                        <TextBlock Text="{Binding ImageStatusText}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,8,0,0"
-                                   Foreground="#666666"/>
-                    </StackPanel>
+                    <Grid>
+                        <!-- Actual fingerprint image -->
+                        <Image Source="{Binding FingerprintImage}"
+                               Stretch="Uniform"
+                               IsVisible="{Binding FingerprintImage, Converter={x:Static ObjectConverters.IsNotNull}}"
+                               Margin="8"/>
+
+                        <!-- Loading indicator -->
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    IsVisible="{Binding IsDecodingImage}">
+                            <TextBlock Text="Decoding WSQ..."
+                                       HorizontalAlignment="Center"
+                                       Foreground="#666666"/>
+                        </StackPanel>
+
+                        <!-- Status text overlay at bottom -->
+                        <Border VerticalAlignment="Bottom"
+                                Background="#80000000"
+                                Padding="8,4"
+                                IsVisible="{Binding ImageStatusText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                            <TextBlock Text="{Binding ImageStatusText}"
+                                       Foreground="White"
+                                       FontSize="11"/>
+                        </Border>
+                    </Grid>
                 </Border>
 
                 <!-- Detail Text -->
