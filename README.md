@@ -2,6 +2,16 @@
 
 An open-source, cross-platform viewer for Electronic Fingerprint Transmission (EFT) files based on the ANSI/NIST-ITL biometric data interchange standard.
 
+## Download
+
+Download the latest release from the [Releases page](../../releases).
+
+### Windows
+
+Download `EftViewer-vX.X.X-win-x64.zip`, extract, and run `EftViewer.Desktop.exe`.
+
+No .NET runtime installation required - the application is self-contained.
+
 ## Overview
 
 EFT files are used by the ATF, FBI, and other agencies for electronic fingerprint submission. This tool allows users to open, parse, and view the contents of EFT files including:
@@ -78,6 +88,10 @@ Fingerprint images in Type-4 and Type-14 records are typically WSQ compressed (W
 **WSQ Resources:**
 - NIST Biometric Image Software (NBIS): https://www.nist.gov/services-resources/software/nist-biometric-image-software-nbis
 - Contains reference `dwsq` (decode) and `cwsq` (encode) implementations in C
+
+## Sample Files
+
+See `samples/README.md` for links to NIST fingerprint databases that can be used for testing.
 
 ## Building from Source
 
