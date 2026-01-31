@@ -88,6 +88,31 @@ Fingerprint images in Type-4 and Type-14 records are typically WSQ compressed (W
 - .NET 8 SDK
 - Visual Studio 2022 or VS Code with C# Dev Kit
 
+## AI-Assisted Development
+
+This project includes AI development tooling for Claude Code and other AI assistants.
+
+### Quick Start
+
+```bash
+# Load project context at start of session
+/prime
+
+# Create AI-enhanced commits
+/save
+
+# Validate repository structure
+/clean
+```
+
+### Structure
+
+- `ai_docs/` - AI documentation and best practices
+- `.claude/commands/` - Claude Code slash commands
+- `CLAUDE.md` - Project-specific AI guidance
+
+See `ai_docs/README.md` for detailed documentation.
+
 ## License
 
 Copyright 2026 William Tyler
