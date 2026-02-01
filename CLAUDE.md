@@ -96,7 +96,7 @@ See [docs/guides/git-workflow.md](docs/guides/git-workflow.md) for complete docu
 - WSQ (Wavelet Scalar Quantization) is FBI's fingerprint compression standard (~15:1 ratio)
 - NIST SP 500-290 defines the ANSI/NIST-ITL standard
 - Control characters: GS (0x1D), RS (0x1E), US (0x1F), FS (0x1C) as separators
-- Project is in early development (MVP phase)
+- Project is in active development (v0.1.0 released)
 
 ## AI Assistant Instructions
 
