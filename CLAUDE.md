@@ -37,29 +37,59 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Git Workflow
 
-> ⚠️ **CRITICAL: All PRs target `develop`, NEVER `main`**
+```
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  MANDATORY RULES - VIOLATION CAUSES REPOSITORY CORRUPTION                     ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║  1. ALL pull requests target `develop` - NEVER target `main` directly         ║
+║  2. ALL feature/fix branches are created FROM `develop`                       ║
+║  3. ONLY `develop` merges into `main` (for releases)                          ║
+║  4. NEVER delete the `develop` branch                                         ║
+║  5. NEVER squash merge into `main` - use regular merge only                   ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+```
 
-**Branch Strategy:**
-- `main` - Buildable milestones only; represents stable releases
-- `develop` - Buildable incremental code; integration branch for ongoing work
-- Work branches - Cut from `develop` for features, fixes, etc.
+**Branch Structure:**
+```
+main (protected)     ← Only receives merges from develop, NEVER direct PRs
+  │
+  └── develop        ← ALL PRs target here, NEVER delete this branch
+        │
+        ├── feature/xyz   ← Branch from develop
+        ├── fix/xyz       ← Branch from develop
+        └── chore/xyz     ← Branch from develop
+```
 
 **Merge Strategy:**
-- Work branches → `develop`: **Squash merge** via pull request
-- `develop` → `main`: **Regular merge** (no squash) to preserve milestone history
+| Source | Target | Merge Type | PR Required |
+|--------|--------|------------|-------------|
+| feature/* | develop | **Squash merge** | Yes |
+| fix/* | develop | **Squash merge** | Yes |
+| develop | main | **Regular merge** (NO squash) | Yes |
 
-**Workflow:**
-1. Create work branch from `develop`: `git checkout -b feature/xyz develop`
-2. Develop and commit freely on work branch
-3. Open PR to `develop`: `gh pr create --base develop`
-4. Squash merge when approved
-5. Periodically merge `develop` into `main` for releases
+**Creating a Branch:**
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/my-feature   # Always branch from develop
+```
 
-**Commands:**
-- Use `/save` command for AI-enhanced commits
-- Descriptive commit messages
+**Creating a PR:**
+```bash
+git push -u origin feature/my-feature
+gh pr create --base develop          # ALWAYS --base develop
+```
 
-See [docs/guides/git-workflow.md](docs/guides/git-workflow.md) for detailed workflow documentation.
+**Releasing to Main:**
+```bash
+# Create PR from develop to main (regular merge, NOT squash)
+gh pr create --base main --head develop --title "Release vX.Y.Z"
+# After merge, tag the release
+git checkout main && git pull
+git tag vX.Y.Z && git push origin vX.Y.Z
+```
+
+See [docs/guides/git-workflow.md](docs/guides/git-workflow.md) for complete documentation.
 
 ## Important Context
 
