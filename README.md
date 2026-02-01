@@ -2,6 +2,22 @@
 
 An open-source, cross-platform viewer for Electronic Fingerprint Transmission (EFT) files based on the ANSI/NIST-ITL biometric data interchange standard.
 
+## Download
+
+Download the latest release from the [Releases page](../../releases).
+
+### Windows
+
+Download `EftViewer-vX.X.X-win-x64.zip`, extract, and run `EftViewer.Desktop.exe`.
+
+No .NET runtime installation required - the application is self-contained.
+
+## Screenshots
+
+| Type-4 Legacy Fingerprints | Type-14 Ten-Print Card |
+|:---:|:---:|
+| ![Type-4 flats](docs/images/flats-screenshot.png) | ![Type-14 tpcard](docs/images/tpcard-screenshot.png) |
+
 ## Overview
 
 EFT files are used by the ATF, FBI, and other agencies for electronic fingerprint submission. This tool allows users to open, parse, and view the contents of EFT files including:
@@ -13,21 +29,22 @@ EFT files are used by the ATF, FBI, and other agencies for electronic fingerprin
 
 ## Project Status
 
-🚧 **Early Development**
+**v0.1.0** - Initial release
 
-### MVP Goals
+### Features
 
-- [ ] Open and parse EFT file structure
-- [ ] Display record hierarchy and metadata fields
-- [ ] Decode and display WSQ-compressed fingerprint images
-- [ ] Windows desktop application
+- [x] Open and parse EFT file structure
+- [x] Display record hierarchy and metadata fields
+- [x] Decode and display WSQ-compressed fingerprint images
+- [x] Support for Type-4 (legacy) and Type-14 fingerprint records
+- [x] Windows desktop application
 
 ### Future Goals
 
-- [ ] macOS support
-- [ ] Android/iOS mobile apps
+- [ ] PNG export for fingerprint images
+- [ ] macOS/Linux testing
 - [ ] Field validation against ANSI/NIST-ITL spec
-- [ ] Export capabilities
+- [ ] Type-10 (face/SMT) and Type-15 (palmprint) support
 
 ## Technology Stack
 
@@ -79,14 +96,52 @@ Fingerprint images in Type-4 and Type-14 records are typically WSQ compressed (W
 - NIST Biometric Image Software (NBIS): https://www.nist.gov/services-resources/software/nist-biometric-image-software-nbis
 - Contains reference `dwsq` (decode) and `cwsq` (encode) implementations in C
 
-## Building from Source
+## Sample Files
 
-*Build instructions will be added as implementation progresses.*
+The `samples/` directory contains NIST-provided test files:
+
+- **nist-type-4-14-flats.eft** - Legacy Type-4 and modern Type-14 fingerprint records
+- **nist-type-14-tpcard.eft** - Ten-print card with Type-14 records and quality metrics
+
+See `samples/README.md` for details and links to additional NIST test data.
+
+## Building from Source
 
 ### Prerequisites
 
-- .NET 8 SDK
-- Visual Studio 2022 or VS Code with C# Dev Kit
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- Visual Studio 2022 or VS Code with C# Dev Kit (optional)
+
+### Build and Run
+
+```bash
+# Clone the repository
+git clone https://github.com/wct097/eft-viewer.git
+cd eft-viewer
+
+# Restore dependencies
+dotnet restore
+
+# Build
+dotnet build
+
+# Run the desktop application
+dotnet run --project src/EftViewer.Desktop
+
+# Run tests
+dotnet test
+```
+
+### Solution Structure
+
+```
+EftViewer.sln
+├── src/
+│   ├── EftViewer.Core/          # Parser library (.NET Standard 2.0)
+│   └── EftViewer.Desktop/       # Avalonia UI application (.NET 8)
+└── tests/
+    └── EftViewer.Core.Tests/    # Unit tests (xUnit)
+```
 
 ## AI-Assisted Development
 

@@ -5,24 +5,41 @@ env/
 .env
 
 # Build outputs
+bin/
+obj/
+out/
 dist/
 build/
 *.min.js
 *.min.css
 
-# OS generated
-.DS_Store
-Thumbs.db
-
 # IDE
+.vs/
 .vscode/
 .idea/
+*.user
+*.suo
 *.swp
 *.swo
+
+# NuGet
+packages/
+*.nupkg
+
+# Test results
+TestResults/
+coverage/
+
+# Publish output
+publish/
 
 # Logs
 *.log
 npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
 
 # AI Development
 .claude/context.md
