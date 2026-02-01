@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore EftViewer.sln
+
+      - name: Build
+        run: dotnet build EftViewer.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/EftViewer.Core.Tests/EftViewer.Core.Tests.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Publish
+        run: |
+          dotnet publish src/EftViewer.Desktop/EftViewer.Desktop.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            --output ./publish
+
+      - name: Create ZIP
+        run: Compress-Archive -Path ./publish/* -DestinationPath EftViewer-${{ github.ref_name }}-win-x64.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: EftViewer-${{ github.ref_name }}-win-x64.zip
+          generate_release_notes: true

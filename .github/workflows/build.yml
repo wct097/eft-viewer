@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore EftViewer.sln
+
+      - name: Build
+        run: dotnet build EftViewer.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/EftViewer.Core.Tests/EftViewer.Core.Tests.csproj --configuration Release --no-build --verbosity normal
