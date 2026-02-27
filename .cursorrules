@@ -25,6 +25,15 @@ You are an expert AI coding assistant helping with this project. Follow these gu
 - Follow patterns established in existing codebase
 - Reference CLAUDE.md for additional project guidance
 
+## Dependency Licensing
+- This is an MIT-licensed open-source project
+- NEVER add GPL, AGPL, SSPL, or copyleft-licensed dependencies
+- NEVER add revenue-gated or threshold-licensed dependencies (e.g., "free under $X revenue")
+- Only use permissive licenses: MIT, BSD, Apache 2.0, ISC
+- For dual-licensed libraries (e.g., GPL or MIT), elect the permissive license
+- Document all new dependencies in THIRD-PARTY-LICENSES.md
+- Check .github/blocked-packages.json before adding any dependency
+
 ## AI Assistance Guidelines
 - Explain complex code changes clearly
 - Suggest improvements and optimizations

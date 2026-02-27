@@ -42,6 +42,20 @@ gh pr create --base develop
 - Update documentation as needed
 - Ensure all tests pass before submitting PR
 
+## Dependency Licensing
+
+This is an MIT-licensed project. All dependencies must use permissive licenses:
+
+- **Allowed**: MIT, BSD, Apache 2.0, ISC, and similar permissive licenses
+- **Prohibited**: GPL, AGPL, SSPL, or any copyleft license
+- **Prohibited**: Revenue-gated or threshold-licensed packages (e.g., "free under $X revenue")
+- **Dual-licensed**: Must elect the permissive license and document in `THIRD-PARTY-LICENSES.md`
+
+When adding a new NuGet package:
+1. Verify its license is permissive
+2. Check `.github/blocked-packages.json` for known-blocked packages
+3. Add an entry to `THIRD-PARTY-LICENSES.md`
+
 ## Pull Request Process
 
 1. Create PR targeting `develop` branch

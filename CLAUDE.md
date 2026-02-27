@@ -91,6 +91,23 @@ git tag vX.Y.Z && git push origin vX.Y.Z
 
 See [docs/guides/git-workflow.md](docs/guides/git-workflow.md) for complete documentation.
 
+## Dependency Licensing
+
+This is an MIT-licensed open-source project. GPL-licensed dependencies are
+prohibited -- they impose copyleft obligations that are incompatible with the
+project's permissive licensing model. Revenue-gated or threshold-licensed
+dependencies (e.g., "Community" licenses that are free only below a revenue
+threshold) are also prohibited -- they create unpredictable cost exposure for
+downstream users.
+
+**Rules:**
+- Only use dependencies with permissive licenses (MIT, BSD, Apache 2.0, ISC)
+- For dual-licensed libraries (e.g., GPL **or** MIT), elect the permissive
+  license and document the election in `THIRD-PARTY-LICENSES.md`
+- Document all new dependencies in `THIRD-PARTY-LICENSES.md`
+- Check `.github/blocked-packages.json` before adding any dependency
+- When in doubt about a license, flag it for human review
+
 ## Important Context
 
 - WSQ (Wavelet Scalar Quantization) is FBI's fingerprint compression standard (~15:1 ratio)
@@ -120,3 +137,4 @@ When assisting with this project:
 - ❌ Skip error handling
 - ❌ Ignore performance implications
 - ❌ Add dependencies without justification
+- ❌ Add GPL-licensed, AGPL-licensed, or revenue-gated dependencies (permissive licenses only)

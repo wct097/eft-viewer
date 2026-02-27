@@ -1,0 +1,103 @@
+name: License Check
+
+on:
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - '**/*.csproj'
+      - '.github/blocked-packages.json'
+
+jobs:
+  check-blocked-packages:
+    name: Check for blocked NuGet packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check blocked packages
+        shell: bash
+        run: |
+          echo "=== License Check: Blocked Packages ==="
+          echo ""
+
+          BLOCKLIST=".github/blocked-packages.json"
+          if [ ! -f "$BLOCKLIST" ]; then
+            echo "No blocked-packages.json found -- skipping."
+            exit 0
+          fi
+
+          FAILED=0
+
+          # Extract package names from the blocklist (case-insensitive matching)
+          PACKAGES=$(jq -r '.blocked_packages[].name' "$BLOCKLIST")
+
+          for PKG in $PACKAGES; do
+            REASON=$(jq -r --arg name "$PKG" '.blocked_packages[] | select(.name == $name) | .reason' "$BLOCKLIST")
+
+            # Search all .csproj files for this package (case-insensitive)
+            MATCHES=$(grep -ril "PackageReference.*Include=\"${PKG}\"" --include="*.csproj" . 2>/dev/null || true)
+
+            if [ -n "$MATCHES" ]; then
+              echo "BLOCKED: $PKG"
+              echo "  Reason: $REASON"
+              echo "  Found in:"
+              echo "$MATCHES" | sed 's/^/    /'
+              echo ""
+              FAILED=1
+            fi
+          done
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo ""
+            echo "One or more blocked packages were found in .csproj files."
+            echo "See .github/blocked-packages.json for details and alternatives."
+            exit 1
+          else
+            echo "No blocked packages found. All clear."
+          fi
+
+  scan-license-files:
+    name: Scan for GPL license files
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan for GPL/AGPL/SSPL license text
+        shell: bash
+        run: |
+          echo "=== License Check: GPL/AGPL/SSPL Scan ==="
+          echo ""
+
+          # Search for LICENSE/COPYING files containing GPL text
+          # Exclude our own documentation files that reference GPL in policy context
+          MATCHES=$(grep -ril \
+            -e "GNU General Public License" \
+            -e "GNU GENERAL PUBLIC LICENSE" \
+            -e "GNU Affero General Public License" \
+            -e "Server Side Public License" \
+            --include="LICENSE*" \
+            --include="COPYING*" \
+            --include="LICENCE*" \
+            . 2>/dev/null \
+            | grep -v "THIRD-PARTY-LICENSES.md" \
+            | grep -v ".github/blocked-packages.json" \
+            | grep -v "node_modules" \
+            || true)
+
+          if [ -n "$MATCHES" ]; then
+            echo "WARNING: Found LICENSE/COPYING files containing GPL/AGPL/SSPL text:"
+            echo "$MATCHES" | sed 's/^/  /'
+            echo ""
+            echo "Review these files to ensure no copyleft-licensed code has been added."
+            echo "If this is a false positive (e.g., dual-licensed with MIT elected),"
+            echo "document the election in THIRD-PARTY-LICENSES.md."
+            exit 1
+          else
+            echo "No GPL/AGPL/SSPL license files found. All clear."
+          fi

@@ -4,49 +4,44 @@ This document provides context and guidelines for GitHub Copilot when assisting 
 
 ## Project Context
 
-[Provide the same context as in CLAUDE.md, adapted for GitHub Copilot]
+**EFT Viewer** is an open-source, cross-platform viewer for Electronic Fingerprint
+Transmission (EFT) files based on the ANSI/NIST-ITL biometric data interchange standard.
+
+- **Tech Stack**: C# / .NET 8, Avalonia UI, .NET Standard 2.0 (core library)
+- **License**: MIT
+- See `CLAUDE.md` for full project architecture and guidelines.
 
 ## Coding Standards
 
-### Style Guidelines
-- [Language-specific style guide]
-- [Naming conventions]
-- [File organization]
+- Follow C# coding conventions
+- Use .NET Standard 2.0 for core library (maximum compatibility)
+- Avalonia MVVM patterns for UI
+- Follow existing code patterns and conventions
 
-### Best Practices
-- [Error handling patterns]
-- [Testing requirements]
-- [Documentation standards]
+## Dependency Licensing
 
-## Code Examples
+This is an MIT-licensed open-source project. All dependencies must use permissive licenses.
 
-### Preferred Patterns
-```javascript
-// Good: Clear, testable, documented
-export async function processUser(userId: string): Promise<User> {
-  // Implementation
-}
-```
+- **Prohibited**: GPL, AGPL, SSPL, or any copyleft-licensed dependencies
+- **Prohibited**: Revenue-gated or threshold-licensed dependencies (e.g., "free under $X revenue")
+- **Required**: Only permissive licenses (MIT, BSD, Apache 2.0, ISC)
+- **Dual-licensed**: Elect the permissive license and document in `THIRD-PARTY-LICENSES.md`
+- **Before adding**: Check `.github/blocked-packages.json` for blocked packages
 
-### Avoid
-```javascript
-// Bad: Unclear, untestable
-function proc(id) {
-  // Implementation
-}
-```
+## Git Workflow
+
+- ALL pull requests target `develop`, NEVER `main` directly
+- Feature/fix branches are created FROM `develop`
+- Use squash merges into `develop`, regular merges from `develop` to `main`
 
 ## Testing Requirements
 
-All new code should include:
-- Unit tests with >80% coverage
-- Integration tests for API endpoints
-- Error case coverage
-- Performance considerations
+- Unit tests for parser logic
+- Integration tests with sample EFT files
+- All new code should include appropriate tests
 
 ## Security Guidelines
 
 - Never hardcode credentials
 - Validate all inputs
-- Use parameterized queries
 - Follow OWASP guidelines

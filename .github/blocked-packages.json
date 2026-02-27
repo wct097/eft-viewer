@@ -1,0 +1,25 @@
+{
+  "description": "NuGet packages blocked from use in EFT Viewer due to license incompatibility. This list is checked by the license-check CI workflow on every PR that modifies .csproj files.",
+  "blocked_packages": [
+    {
+      "name": "iTextSharp",
+      "reason": "AGPL-3.0 license -- copyleft, incompatible with MIT-licensed project."
+    },
+    {
+      "name": "itextsharp.xmlworker",
+      "reason": "AGPL-3.0 license -- copyleft, incompatible with MIT-licensed project."
+    },
+    {
+      "name": "itext7",
+      "reason": "AGPL-3.0 license -- copyleft, incompatible with MIT-licensed project."
+    },
+    {
+      "name": "QuestPDF",
+      "reason": "Revenue-gated license -- free only for organizations under $1M annual gross revenue."
+    },
+    {
+      "name": "ImageSharp",
+      "reason": "Revenue-gated Six Labors Split License -- free only under certain conditions. Use SkiaSharp (MIT) or System.Drawing alternatives instead."
+    }
+  ]
+}
