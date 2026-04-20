@@ -154,11 +154,11 @@ This project includes AI development tooling for Claude Code and other AI assist
 # Load project context at start of session
 /prime
 
-# Create AI-enhanced commits
-/save
+# Implement a GitHub issue end-to-end
+/address-issue <issue-number>
 
-# Validate repository structure
-/clean
+# Review a pull request
+/review-pr <pr-number>
 ```
 
 ### Structure
