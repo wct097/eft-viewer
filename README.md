@@ -163,11 +163,9 @@ This project includes AI development tooling for Claude Code and other AI assist
 
 ### Structure
 
-- `ai_docs/` - AI documentation and best practices
 - `.claude/commands/` - Claude Code slash commands
 - `CLAUDE.md` - Project-specific AI guidance
-
-See `ai_docs/README.md` for detailed documentation.
+- `docs/project_context.md` - Project context for AI tools
 
 ## License
 

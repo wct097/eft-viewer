@@ -1,5 +1,6 @@
+<!-- Source: https://github.com/Strode-Mountain/machine-shop -->
 # Prime Command
-<!-- AI-SETUP-SCRIPT-TAG: v2.39.0 -->
+<!-- AI-SETUP-SCRIPT-TAG: v4.0.0 -->
 
 ## Project Context Display
 
@@ -23,7 +24,7 @@ The `/prime` command operates in single mode, gathering and displaying project c
 
 **Documentation Context:**
 - README.md content and project overview
-- AI development documentation (ai_docs/project_context.md)
+- AI development documentation (docs/project_context.md)
 - Specification files and requirements
 - Code conventions and development guidelines
 
@@ -70,28 +71,42 @@ When loading context, the AI must:
 3. **Display author information clearly** - Show who will be used for commits
 4. **Request confirmation** - Ask the user to verify the author information is correct
 
+### Available Tooling Inventory
+
+After displaying project context, detect and display available tooling:
+
+1. **Superpowers plugin** — check if the superpowers plugin is installed and list available skills from the system context
+2. **Agency-agents personas** — check if `.claude/agent-teams.json` exists; if so, list available team abbreviations and their roles
+3. **Slash commands** — list available commands in `.claude/commands/`
+
+This inventory helps the user know what's available for the session ahead.
+
 ### AI Behavior Instructions
 
 When this command is executed:
 1. **Load project context** - Gather all relevant project information
 2. **Verify git authors** - Check and display current git author configuration
 3. **Display author confirmation** - Clearly show the human author that will be used for commits
-4. **Wait for confirmation** - Ask user to confirm or correct the author information
-5. **No autonomous actions** - This is a context-loading command only; take no actions beyond loading information
+4. **Display available tooling** - Show superpowers skills, agent teams, and slash commands
+5. **Wait for confirmation** - Ask user to confirm or correct the author information
+6. **No autonomous actions** - This is a context-loading command only; take no actions beyond loading information
 
 ### Example Response
 After running /prime, the AI should respond:
 ```
-✓ Project context loaded. I understand your project structure, recent changes, and development patterns.
+Project context loaded.
 
-📝 Git Author Configuration:
+Git Author Configuration:
    Current git user: John Doe <john.doe@example.com>
-   This is the identity I'll use when switching back to human author after AI commits.
-   
-   ⚠️ Please confirm this is correct. If not, please run:
+   Please confirm this is correct. If not, please run:
       git config user.name "Your Name"
       git config user.email "your.email@example.com"
-   
+
+Available tooling:
+   Superpowers: active (brainstorming, TDD, code-reviewer, ...)
+   Agent teams: 19 personas (SE, SA, FE, MB, CR, SEC, ...)
+   Commands: /address-issue, /refine-issue, /review-pr, /prime, /update-agency
+
 What would you like to work on?
 ```
 

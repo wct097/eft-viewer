@@ -1,156 +1,131 @@
 # Git Workflow
 
-This project uses a **develop → main** branching strategy with feature branches.
+This project follows **GitHub Flow**: a single long-lived `main` branch with short-lived topic branches that are squash-merged back into `main` and deleted.
 
 ## ⛔ CRITICAL RULES
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  MANDATORY - VIOLATING THESE RULES CORRUPTS THE REPOSITORY                    ║
+║  MANDATORY RULES                                                              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
-║  1. ALL pull requests target `develop` - NEVER target `main` directly         ║
-║  2. ALL feature/fix branches are created FROM `develop`                       ║
-║  3. ONLY `develop` merges into `main` (for releases)                          ║
-║  4. NEVER delete the `develop` branch                                         ║
-║  5. NEVER squash merge into `main` - use regular merge only                   ║
-║  6. ALWAYS squash merge into `develop`                                        ║
+║  1. `main` is the only long-lived branch                                      ║
+║  2. ALL work happens on short-lived `feature/*`, `fix/*`, `chore/*` branches  ║
+║  3. ALL pull requests target `main`                                           ║
+║  4. ALL merges into `main` are **squash merges**                              ║
+║  5. Delete the topic branch (local + remote) after the PR merges              ║
+║  6. No direct pushes to `main` — always go through a PR                       ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 ```
 
 ## Branch Structure
 
 ```
-main (protected)     ← Releases only, NEVER direct PRs
+main (protected, only long-lived branch)
   │
-  └── develop        ← ALL work merges here first
-        │
-        ├── feature/xxx    New features
-        ├── fix/xxx        Bug fixes
-        └── chore/xxx      Maintenance tasks
+  ├── feature/xxx    New features
+  ├── fix/xxx        Bug fixes
+  └── chore/xxx      Maintenance tasks
 ```
+
+Topic branches are short-lived: create from `main`, do the work, open a PR, squash-merge, delete.
 
 ## Merge Strategy
 
 | Source | Target | Merge Type | Why |
 |--------|--------|------------|-----|
-| feature/* | develop | **Squash** | Clean history, one commit per feature |
-| fix/* | develop | **Squash** | Clean history, one commit per fix |
-| develop | main | **Regular merge** | Preserve milestone history |
+| feature/* | main | **Squash** | One commit per feature on `main` |
+| fix/* | main | **Squash** | One commit per fix on `main` |
+| chore/* | main | **Squash** | One commit per chore on `main` |
 
 ## GitHub Branch Protection Rules
 
-Configure these rules in **Settings → Rules → Rulesets**:
+Configure in **Settings → Rules → Rulesets** for the `main` branch:
 
-### Rule: `main` branch
 - ✅ Require pull request before merging
 - ✅ Require approvals (1+)
+- ✅ Require status checks to pass
 - ✅ Block force pushes
 - ✅ Block deletions
-- ❌ Do NOT allow squash merging (regular merge only)
-
-### Rule: `develop` branch
-- ✅ Require pull request before merging
-- ✅ Block force pushes
-- ✅ Block deletions
-- ✅ Require squash merging
+- ✅ Allow **squash merging only** (disable regular merge and rebase merge)
+- ✅ Automatically delete head branches after merge
 
 ## Workflow
 
 ### Starting New Work
 
 ```bash
-# ALWAYS start from develop
-git checkout develop
-git pull origin develop
+# Always start from an up-to-date main
+git checkout main
+git pull origin main
 
-# Create feature branch FROM develop
+# Create a topic branch from main
 git checkout -b feature/my-feature
 ```
 
 ### Submitting Work
 
 ```bash
-# Push feature branch
+# Push the topic branch
 git push -u origin feature/my-feature
 
-# Create PR - ALWAYS target develop
-gh pr create --base develop
+# Open the PR — always target main
+gh pr create --base main
 ```
 
-### Releasing to Main
+### After the PR Merges
 
 ```bash
-# Create PR from develop → main
-gh pr create --base main --head develop --title "Release vX.Y.Z"
-
-# IMPORTANT: Use regular merge, NOT squash merge
-# After PR is merged:
 git checkout main
 git pull origin main
 
-# Tag the release
+# Clean up the merged topic branch
+git branch -d feature/my-feature
+# If GitHub didn't auto-delete the remote:
+git push origin --delete feature/my-feature
+```
+
+### Releasing
+
+```bash
+# Tag the release directly from main
+git checkout main && git pull origin main
 git tag vX.Y.Z
 git push origin vX.Y.Z
-
-# Sync tag back to develop (optional but recommended)
-git checkout develop
-git pull origin develop
-git merge main
-git push origin develop
 ```
+
+Use a release PR (e.g. `chore/release-vX.Y.Z`) if the release requires version bumps, changelog updates, or other file changes before tagging.
 
 ## Common Mistakes
 
 | Mistake | Consequence | Prevention |
 |---------|-------------|------------|
-| PR to main instead of develop | Skips integration, breaks sync | Branch rules + always use `--base develop` |
-| Squash merge to main | Loses develop history link | Branch rules: disable squash for main |
-| Branching from main | Missing develop changes | Always `checkout develop` first |
-| Deleting develop | Catastrophic - loses integration branch | Branch rules: block deletion |
-| Direct commits to protected branches | Bypasses review | Branch rules: require PR |
+| Committing directly to `main` | Bypasses review and CI | Branch rules: require PR |
+| Branching from a stale `main` | Avoidable merge conflicts | Always `git pull origin main` before branching |
+| Non-squash merge into `main` | Clutters history with WIP commits | Branch rules: allow squash only |
+| Leaving merged branches around | Branch list rot | Delete after merge; enable auto-delete |
+| Long-lived topic branches | Drift, conflicts, stale reviews | Keep PRs small; rebase onto `main` often |
 
 ## Recovering from Mistakes
 
-### PR was squash-merged to main (should have been regular merge)
-
-**This is bad** - the develop branch history is now disconnected from main.
+### Accidentally committed to `main` locally
 
 ```bash
-# Reset main to before the bad merge
-git checkout main
-git reset --hard <commit-before-merge>
-git push --force origin main  # Requires temporarily disabling protection
-
-# Re-do the merge correctly
-gh pr create --base main --head develop --title "Release vX.Y.Z"
-# Use regular merge (not squash) when merging the PR
+# Move the commits to a new branch, reset main
+git branch feature/rescue-work
+git reset --hard origin/main
+git checkout feature/rescue-work
+# Now open a PR as normal
 ```
 
-### PR merged to main instead of develop
-
-```bash
-# Reset main if needed, then sync develop
-git checkout develop
-git merge origin/main
-git push origin develop
-```
-
-### Feature branch based on main instead of develop
+### Topic branch fell behind `main`
 
 ```bash
 git checkout feature/my-feature
-git rebase --onto develop main feature/my-feature
+git fetch origin
+git rebase origin/main
 git push --force-with-lease
 ```
 
-### Develop branch was deleted
+### PR merged with the wrong strategy (e.g. regular merge instead of squash)
 
-```bash
-# If you have it locally:
-git push origin develop
-
-# If not, recreate from main and cherry-pick/reapply work
-git checkout main
-git checkout -b develop
-git push origin develop
-```
+Typically no action needed once merged — the change is on `main`. Tighten branch protection to prevent recurrence.

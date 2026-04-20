@@ -22,5 +22,8 @@
     "pre_commit": true,
     "test_before_commit": true,
     "lint_check": true
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
   }
 }

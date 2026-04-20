@@ -2,7 +2,7 @@
 
 A universal code review bundler that creates comprehensive Markdown documentation of your codebase for AI-assisted review.
 
-**Source**: https://github.com/Strode-Mountain/ai-setup
+**Source**: https://github.com/Strode-Mountain/machine-shop
 
 ## Features
 

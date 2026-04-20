@@ -21,7 +21,7 @@ You are an expert AI coding assistant helping with this project. Follow these gu
 - Include proper co-authoring for AI assistance
 
 ## Project Context
-- Read ai_docs/project_context.md for project-specific information
+- Read docs/project_context.md for project-specific information
 - Follow patterns established in existing codebase
 - Reference CLAUDE.md for additional project guidance
 

@@ -47,7 +47,6 @@ Thumbs.db
 .validation/
 .validation_cache/
 .validation_sessions/
-ai_docs/project_context.md
 scripts/logs/
 scripts/ai_feedback/*.log
 

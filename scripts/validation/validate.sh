@@ -1,6 +1,6 @@
 #!/bin/bash
 # validate.sh - Lightweight validation runner for AI Setup
-# Version: 2.39.0
+# Version: 4.0.0
 # Purpose: Fast, simple validation that addresses cashflow team performance concerns
 #
 # Usage:
@@ -16,7 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 CACHE_DIR="$PROJECT_ROOT/.validation_cache"
 CACHE_TTL=3600  # 1 hour
-VERSION="2.39.0"
+VERSION="4.0.0"
 
 # Colors for output (minimal, clear)
 RED='\033[0;31m'
