@@ -217,9 +217,9 @@ EftViewer.Desktop/
 
 ## CI/CD Strategy
 
-### Develop Branch (Fast)
+### Pull Request Build (Fast)
 
-**Trigger:** Push to `develop`, PR to `develop`
+**Trigger:** Push to `main`, PR to `main`
 **Goal:** < 2 minutes
 **File:** `.github/workflows/build.yml`
 
@@ -229,9 +229,9 @@ EftViewer.Desktop/
 - Run unit tests
 ```
 
-### Main Branch (Comprehensive)
+### Release Build (Comprehensive)
 
-**Trigger:** PR to `main`
+**Trigger:** Tag push (`vX.Y.Z`)
 **Goal:** < 5 minutes
 **File:** `.github/workflows/release.yml`
 

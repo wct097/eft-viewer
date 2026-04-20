@@ -22,16 +22,6 @@ Features are moved here when:
 
 ## Archive Command
 
-```bash
-/feature archive <feature-name>
-```
-
-This command:
-- Moves feature document from `docs/features/` to here
-- Adds archive metadata (date, final branch, PR link)
-- Updates status to 'archived'
-- Preserves complete session history
-
 ## Naming Convention
 
 Archived features retain their original names:
@@ -84,4 +74,4 @@ Archived features are:
 - Part of project documentation
 
 ---
-*Feature archive system v2.39.0*
+*Feature archive system v2.43.0*

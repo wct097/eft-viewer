@@ -1,6 +1,6 @@
 # Active Features Directory
 
-This directory contains active feature development tracking documents managed by the `/feature` command.
+This directory contains active feature development tracking documents.
 
 ## Purpose
 
@@ -29,14 +29,6 @@ Features progress through these statuses:
 
 ## Usage
 
-Features are managed via the `/feature` command:
-```bash
-/feature              # Start or continue a feature
-/feature save        # Save session progress
-/feature list        # List all active features
-/feature archive     # Archive completed feature
-```
-
 ## Branch Association
 
 Features track associated git branches without constraining naming:
@@ -56,9 +48,8 @@ Features track associated git branches without constraining naming:
 
 Feature tracking integrates with:
 - `/prime` - Loads feature context automatically
-- `/save` - Includes feature in commit messages
 - Git branches - Intelligent association without constraints
 - GitHub issues - Can reference related issues
 
 ---
-*Feature tracking system v2.39.0*
+*Feature tracking system v2.43.0*

@@ -10,29 +10,30 @@ Thank you for your interest in contributing to EFT Viewer!
 
 ## Git Workflow
 
-This project uses a **develop → main** branching strategy:
+This project follows **GitHub Flow**: a single long-lived `main` branch with short-lived topic branches.
 
-- **All PRs target `develop`**, not main
-- Feature branches are created from `develop`
-- Releases are merged from `develop` to `main`
+- **All PRs target `main`**
+- Feature/fix/chore branches are created from `main`
+- PRs are **squash-merged** into `main`
+- Topic branches are deleted after merge
 
 See [docs/guides/git-workflow.md](docs/guides/git-workflow.md) for detailed instructions.
 
 ### Quick Start
 
 ```bash
-# Start from develop
-git checkout develop
-git pull origin develop
+# Start from an up-to-date main
+git checkout main
+git pull origin main
 
-# Create your feature branch
+# Create your topic branch
 git checkout -b feature/my-feature
 
 # Make changes, commit, push
 git push -u origin feature/my-feature
 
-# Create PR targeting develop
-gh pr create --base develop
+# Open the PR targeting main
+gh pr create --base main
 ```
 
 ## Code Standards
@@ -44,11 +45,11 @@ gh pr create --base develop
 
 ## Pull Request Process
 
-1. Create PR targeting `develop` branch
+1. Open PR targeting `main`
 2. Fill out PR template
 3. Ensure CI passes
 4. Request review
-5. Squash merge when approved
+5. Squash merge when approved, then delete the branch
 
 ## Reporting Issues
 

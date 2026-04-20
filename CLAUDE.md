@@ -37,54 +37,60 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Git Workflow
 
+This project follows **GitHub Flow**: a single long-lived `main` branch with short-lived topic branches.
+
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  MANDATORY RULES - VIOLATION CAUSES REPOSITORY CORRUPTION                     ║
+║  MANDATORY RULES                                                              ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
-║  1. ALL pull requests target `develop` - NEVER target `main` directly         ║
-║  2. ALL feature/fix branches are created FROM `develop`                       ║
-║  3. ONLY `develop` merges into `main` (for releases)                          ║
-║  4. NEVER delete the `develop` branch                                         ║
-║  5. NEVER squash merge into `main` - use regular merge only                   ║
+║  1. `main` is the only long-lived branch                                      ║
+║  2. ALL work happens on short-lived `feature/*`, `fix/*`, `chore/*` branches  ║
+║  3. ALL pull requests target `main`                                           ║
+║  4. ALL merges into `main` are **squash merges**                              ║
+║  5. Delete the topic branch (local + remote) after the PR merges              ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 ```
 
 **Branch Structure:**
 ```
-main (protected)     ← Only receives merges from develop, NEVER direct PRs
+main (protected, only long-lived branch)
   │
-  └── develop        ← ALL PRs target here, NEVER delete this branch
-        │
-        ├── feature/xyz   ← Branch from develop
-        ├── fix/xyz       ← Branch from develop
-        └── chore/xyz     ← Branch from develop
+  ├── feature/xyz   ← Branch from main, PR back to main, delete after merge
+  ├── fix/xyz       ← Branch from main, PR back to main, delete after merge
+  └── chore/xyz     ← Branch from main, PR back to main, delete after merge
 ```
 
 **Merge Strategy:**
 | Source | Target | Merge Type | PR Required |
 |--------|--------|------------|-------------|
-| feature/* | develop | **Squash merge** | Yes |
-| fix/* | develop | **Squash merge** | Yes |
-| develop | main | **Regular merge** (NO squash) | Yes |
+| feature/* | main | **Squash merge** | Yes |
+| fix/* | main | **Squash merge** | Yes |
+| chore/* | main | **Squash merge** | Yes |
 
 **Creating a Branch:**
 ```bash
-git checkout develop
-git pull origin develop
-git checkout -b feature/my-feature   # Always branch from develop
+git checkout main
+git pull origin main
+git checkout -b feature/my-feature   # Always branch from main
 ```
 
 **Creating a PR:**
 ```bash
 git push -u origin feature/my-feature
-gh pr create --base develop          # ALWAYS --base develop
+gh pr create --base main             # All PRs target main
 ```
 
-**Releasing to Main:**
+**After the PR merges:**
 ```bash
-# Create PR from develop to main (regular merge, NOT squash)
-gh pr create --base main --head develop --title "Release vX.Y.Z"
-# After merge, tag the release
+git checkout main
+git pull origin main
+git branch -d feature/my-feature             # delete locally
+git push origin --delete feature/my-feature  # delete on remote (if not auto-deleted)
+```
+
+**Releasing:**
+```bash
+# Tag directly from main after the release PR merges
 git checkout main && git pull
 git tag vX.Y.Z && git push origin vX.Y.Z
 ```
