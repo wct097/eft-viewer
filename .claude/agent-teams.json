@@ -15,6 +15,8 @@
   "A11Y": ".claude/agents/testing/testing-accessibility-auditor.md",
   "TRA": ".claude/agents/testing/testing-test-results-analyzer.md",
   "EV": ".claude/agents/testing/testing-evidence-collector.md",
+  "TE": ".claude/agents/testing/testing-tool-evaluator.md",
+  "WO": ".claude/agents/testing/testing-workflow-optimizer.md",
   "UI": ".claude/agents/design/design-ui-designer.md",
   "UX": ".claude/agents/design/design-ux-architect.md",
   "UXR": ".claude/agents/design/design-ux-researcher.md",
