@@ -8,7 +8,7 @@
 ## Technology Stack
 - **Language**: C# (.NET 8 for the desktop app, .NET Standard 2.0 for the core parser library)
 - **UI Framework**: Avalonia UI (MVVM, cross-platform — Windows, macOS, Linux)
-- **Imaging**: NBIS-based WSQ codec bindings for FBI wavelet compression
+- **Imaging**: managed C# WSQ decoder (Managed.Wsq-derived) for FBI wavelet compression — no native dependencies
 - **Testing**: xUnit
 - **Database**: none
 
@@ -28,7 +28,7 @@ samples/                  # Synthetic EFT files for testing
 ### Key Decisions
 - Core parser targets **.NET Standard 2.0** for maximum portability (future MAUI/Xamarin/Python reuse).
 - Desktop app uses Avalonia (MVVM) so a single codebase targets Windows/macOS/Linux.
-- WSQ decompression uses NBIS bindings rather than a managed reimplementation.
+- WSQ decompression uses a managed C# decoder (Managed.Wsq-derived, System.Drawing removed) for full cross-platform portability — no native bindings.
 - Record-based EFT format parsed with tagged fields (`Type.Field:Value`), control characters `GS (0x1D)`, `RS (0x1E)`, `US (0x1F)`, `FS (0x1C)` as separators.
 
 ## Development Workflow
@@ -55,7 +55,7 @@ See [docs/guides/git-workflow.md](guides/git-workflow.md) for the full workflow.
 
 ## Important Context for AI Tools
 - **EFT file format** is record-based with tagged fields. Type-1 (transaction info) is required; Type-4/14 contain fingerprint images (WSQ compressed); Type-10 contains face/SMT images; Type-15 contains palmprints.
-- **WSQ** is the FBI's wavelet compression standard (~15:1 ratio). Decoding uses NBIS bindings under `src/EftViewer.Core/Imaging/`.
+- **WSQ** is the FBI's wavelet compression standard (~15:1 ratio). Decoding is a managed C# implementation under `src/EftViewer.Core/Imaging/` (no native bindings).
 - **Do not** add dependencies to the core library that aren't .NET Standard 2.0 compatible.
 - **Sample files** under `samples/` are synthetic and safe to commit; never commit real biometric data.
 - **Security**: this viewer handles sensitive biometric data. Treat all file inputs as untrusted; fail closed on malformed records.

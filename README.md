@@ -6,11 +6,31 @@ An open-source, cross-platform viewer for Electronic Fingerprint Transmission (E
 
 Download the latest release from the [Releases page](../../releases).
 
+Self-contained builds are published for Windows, macOS, and Linux — no .NET runtime installation required.
+
 ### Windows
 
 Download `EftViewer-vX.X.X-win-x64.zip`, extract, and run `EftViewer.Desktop.exe`.
 
-No .NET runtime installation required - the application is self-contained.
+### macOS
+
+Download `EftViewer-vX.X.X-osx-arm64.zip` (Apple Silicon) or `EftViewer-vX.X.X-osx-x64.zip` (Intel), extract, then:
+
+```bash
+chmod +x EftViewer.Desktop
+./EftViewer.Desktop
+```
+
+The builds are not yet code-signed, so the first launch needs Finder → right-click → **Open** (or `xattr -dr com.apple.quarantine EftViewer.Desktop`) to clear Gatekeeper.
+
+### Linux
+
+Download `EftViewer-vX.X.X-linux-x64.zip`, extract, then:
+
+```bash
+chmod +x EftViewer.Desktop
+./EftViewer.Desktop
+```
 
 ## Screenshots
 
@@ -42,7 +62,7 @@ EFT files are used by the ATF, FBI, and other agencies for electronic fingerprin
 ### Future Goals
 
 - [ ] PNG export for fingerprint images
-- [ ] macOS/Linux builds and testing
+- [x] macOS and Linux builds (self-contained, build + test in CI)
 - [ ] Field validation against ANSI/NIST-ITL spec
 - [ ] Type-10 (face/SMT) and Type-15 (palmprint) support
 - [ ] Code signing via [SignPath.io](https://signpath.io) (eliminate Windows SmartScreen warning)
@@ -54,7 +74,7 @@ EFT files are used by the ATF, FBI, and other agencies for electronic fingerprin
 | Core Parser | C# / .NET Standard 2.0 | Shared library, broad compatibility |
 | Desktop UI | Avalonia UI / .NET 10 | Cross-platform (Windows, macOS, Linux) |
 | Mobile (future) | .NET MAUI | Android/iOS |
-| WSQ Codec | NBIS-based bindings | FBI wavelet compression standard |
+| WSQ Codec | Managed C# (Managed.Wsq-derived) | FBI wavelet compression standard, no native deps |
 | Alt CLI | Python | Scripting/automation use cases |
 
 ### Why These Choices
