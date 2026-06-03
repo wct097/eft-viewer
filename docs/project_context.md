@@ -23,7 +23,6 @@ tests/
 └── EftViewer.Core.Tests/ # Unit tests (xUnit)
 docs/                     # Architecture, guides, feature tracking
 samples/                  # Synthetic EFT files for testing
-scripts/                  # Validation, code review, git author tooling
 ```
 
 ### Key Decisions

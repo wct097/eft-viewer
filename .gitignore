@@ -53,3 +53,11 @@ scripts/ai_feedback/*.log
 # Cursor IDE
 .cursor/
 .cursorignore
+
+# Local AI tooling (kept local, not published)
+.claude/
+scripts/hooks/
+scripts/validation/
+scripts/code_review/
+scripts/git/
+scripts/deployment/
