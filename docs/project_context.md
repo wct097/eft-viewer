@@ -6,7 +6,7 @@
 **Repository**: https://github.com/wct097/eft-viewer
 
 ## Technology Stack
-- **Language**: C# (.NET 8 for the desktop app, .NET Standard 2.0 for the core parser library)
+- **Language**: C# (.NET 10 for the desktop app, .NET Standard 2.0 for the core parser library)
 - **UI Framework**: Avalonia UI (MVVM, cross-platform — Windows, macOS, Linux)
 - **Imaging**: managed C# WSQ decoder (Managed.Wsq-derived) for FBI wavelet compression — no native dependencies
 - **Testing**: xUnit
@@ -18,7 +18,7 @@
 ```
 src/
 ├── EftViewer.Core/       # Parser library (.NET Standard 2.0)
-└── EftViewer.Desktop/    # Avalonia UI application (.NET 8)
+└── EftViewer.Desktop/    # Avalonia UI application (.NET 10)
 tests/
 └── EftViewer.Core.Tests/ # Unit tests (xUnit)
 docs/                     # Architecture, guides, feature tracking

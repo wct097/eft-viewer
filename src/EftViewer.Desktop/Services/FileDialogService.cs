@@ -35,6 +35,37 @@ namespace EftViewer.Desktop.Services
             return result.FirstOrDefault()?.Path.LocalPath;
         }
 
+        public async Task<string?> ShowSaveFileDialogAsync(string title, string suggestedFileName, string[] filters)
+        {
+            var window = GetMainWindow();
+            if (window == null)
+                return null;
+
+            var storageProvider = window.StorageProvider;
+
+            // Derive a default extension from the first "*.ext" filter so bare
+            // filenames still get the right extension on Linux/macOS pickers.
+            var firstPattern = filters.FirstOrDefault();
+            var defaultExtension = firstPattern != null && firstPattern.StartsWith("*.")
+                ? firstPattern.Substring(2)
+                : null;
+
+            var options = new FilePickerSaveOptions
+            {
+                Title = title,
+                SuggestedFileName = suggestedFileName,
+                DefaultExtension = defaultExtension,
+                FileTypeChoices = filters.Select(f => new FilePickerFileType(f)
+                {
+                    Patterns = new[] { f }
+                }).ToList()
+            };
+
+            var result = await storageProvider.SaveFilePickerAsync(options);
+
+            return result?.Path.LocalPath;
+        }
+
         private static Window? GetMainWindow()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

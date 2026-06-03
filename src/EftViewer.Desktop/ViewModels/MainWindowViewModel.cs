@@ -41,9 +41,11 @@ namespace EftViewer.Desktop.ViewModels
         private string _imageStatusText = string.Empty;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ExportPngCommand))]
         private WriteableBitmap? _fingerprintImage;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ExportPngCommand))]
         private bool _isDecodingImage;
 
         public ObservableCollection<TreeNodeViewModel> RootNodes { get; } = new();
@@ -158,6 +160,34 @@ namespace EftViewer.Desktop.ViewModels
                 StatusText = $"Error: {ex.Message}";
             }
         }
+
+        [RelayCommand(CanExecute = nameof(CanExportPng))]
+        private async Task ExportPngAsync()
+        {
+            var image = FingerprintImage;
+            if (image == null)
+                return;
+
+            try
+            {
+                var savePath = await _fileDialogService.ShowSaveFileDialogAsync(
+                    "Export Fingerprint as PNG",
+                    "fingerprint.png",
+                    new[] { "*.png" });
+
+                if (string.IsNullOrEmpty(savePath))
+                    return;
+
+                image.Save(savePath);
+                StatusText = $"Exported PNG: {savePath}";
+            }
+            catch (Exception ex)
+            {
+                StatusText = $"Export failed: {ex.Message}";
+            }
+        }
+
+        private bool CanExportPng => FingerprintImage != null && !IsDecodingImage;
 
         [RelayCommand]
         private void Exit()

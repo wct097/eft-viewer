@@ -61,7 +61,7 @@ EFT files are used by the ATF, FBI, and other agencies for electronic fingerprin
 
 ### Future Goals
 
-- [ ] PNG export for fingerprint images
+- [x] PNG export for fingerprint images
 - [x] macOS and Linux builds (self-contained, build + test in CI)
 - [ ] Field validation against ANSI/NIST-ITL spec
 - [ ] Type-10 (face/SMT) and Type-15 (palmprint) support
