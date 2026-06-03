@@ -45,6 +45,7 @@ namespace EftViewer.Desktop.ViewModels
         private WriteableBitmap? _fingerprintImage;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ExportPngCommand))]
         private bool _isDecodingImage;
 
         public ObservableCollection<TreeNodeViewModel> RootNodes { get; } = new();
@@ -186,7 +187,7 @@ namespace EftViewer.Desktop.ViewModels
             }
         }
 
-        private bool CanExportPng => FingerprintImage != null;
+        private bool CanExportPng => FingerprintImage != null && !IsDecodingImage;
 
         [RelayCommand]
         private void Exit()

@@ -43,10 +43,18 @@ namespace EftViewer.Desktop.Services
 
             var storageProvider = window.StorageProvider;
 
+            // Derive a default extension from the first "*.ext" filter so bare
+            // filenames still get the right extension on Linux/macOS pickers.
+            var firstPattern = filters.FirstOrDefault();
+            var defaultExtension = firstPattern != null && firstPattern.StartsWith("*.")
+                ? firstPattern.Substring(2)
+                : null;
+
             var options = new FilePickerSaveOptions
             {
                 Title = title,
                 SuggestedFileName = suggestedFileName,
+                DefaultExtension = defaultExtension,
                 FileTypeChoices = filters.Select(f => new FilePickerFileType(f)
                 {
                     Patterns = new[] { f }
