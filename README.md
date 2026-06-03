@@ -52,7 +52,7 @@ EFT files are used by the ATF, FBI, and other agencies for electronic fingerprin
 | Component | Technology | Notes |
 |-----------|------------|-------|
 | Core Parser | C# / .NET Standard 2.0 | Shared library, broad compatibility |
-| Desktop UI | Avalonia UI / .NET 8 | Cross-platform (Windows, macOS, Linux) |
+| Desktop UI | Avalonia UI / .NET 10 | Cross-platform (Windows, macOS, Linux) |
 | Mobile (future) | .NET MAUI | Android/iOS |
 | WSQ Codec | NBIS-based bindings | FBI wavelet compression standard |
 | Alt CLI | Python | Scripting/automation use cases |
@@ -110,7 +110,7 @@ See `samples/README.md` for details and links to additional NIST test data.
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later
 - Visual Studio 2022 or VS Code with C# Dev Kit (optional)
 
 ### Build and Run
@@ -139,7 +139,7 @@ dotnet test
 EftViewer.sln
 ├── src/
 │   ├── EftViewer.Core/          # Parser library (.NET Standard 2.0)
-│   └── EftViewer.Desktop/       # Avalonia UI application (.NET 8)
+│   └── EftViewer.Desktop/       # Avalonia UI application (.NET 10)
 └── tests/
     └── EftViewer.Core.Tests/    # Unit tests (xUnit)
 ```
