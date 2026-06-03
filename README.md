@@ -146,26 +146,8 @@ EftViewer.sln
 
 ## AI-Assisted Development
 
-This project includes AI development tooling for Claude Code and other AI assistants.
-
-### Quick Start
-
-```bash
-# Load project context at start of session
-/prime
-
-# Implement a GitHub issue end-to-end
-/address-issue <issue-number>
-
-# Review a pull request
-/review-pr <pr-number>
-```
-
-### Structure
-
-- `.claude/commands/` - Claude Code slash commands
-- `CLAUDE.md` - Project-specific AI guidance
-- `docs/project_context.md` - Project context for AI tools
+This project is developed with AI assistance. Guidance for AI assistants lives in
+[CLAUDE.md](CLAUDE.md) and [docs/project_context.md](docs/project_context.md).
 
 ## License
 
