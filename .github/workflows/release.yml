@@ -10,7 +10,20 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    name: Build ${{ matrix.rid }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-arm64
+          - os: macos-13
+            rid: osx-x64
+          - os: ubuntu-latest
+            rid: linux-x64
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
     steps:
@@ -32,20 +45,41 @@ jobs:
         run: dotnet test tests/EftViewer.Core.Tests/EftViewer.Core.Tests.csproj --configuration Release --no-build --verbosity normal
 
       - name: Publish
-        run: |
-          dotnet publish src/EftViewer.Desktop/EftViewer.Desktop.csproj `
-            --configuration Release `
-            --runtime win-x64 `
-            --self-contained true `
-            -p:PublishSingleFile=true `
-            -p:IncludeNativeLibrariesForSelfExtract=true `
-            --output ./publish
+        run: dotnet publish src/EftViewer.Desktop/EftViewer.Desktop.csproj --configuration Release --runtime ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output ./publish
 
-      - name: Create ZIP
-        run: Compress-Archive -Path ./publish/* -DestinationPath EftViewer-${{ github.ref_name }}-win-x64.zip
+      - name: Package
+        shell: bash
+        run: |
+          cd publish
+          archive="EftViewer-${{ github.ref_name }}-${{ matrix.rid }}.zip"
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            7z a "../$archive" ./*
+          else
+            zip -r "../$archive" ./*
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EftViewer-${{ matrix.rid }}
+          path: EftViewer-${{ github.ref_name }}-${{ matrix.rid }}.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: EftViewer-${{ github.ref_name }}-win-x64.zip
+          files: artifacts/*.zip
           generate_release_notes: true
