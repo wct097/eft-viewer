@@ -14,7 +14,7 @@ Download `EftViewer-vX.X.X-win-x64.zip`, extract, and run `EftViewer.Desktop.exe
 
 ### macOS
 
-Download `EftViewer-vX.X.X-osx-arm64.zip` (Apple Silicon) or `EftViewer-vX.X.X-osx-x64.zip` (Intel), extract, then:
+Download `EftViewer-vX.X.X-osx-arm64.zip` (Apple Silicon), extract, then:
 
 ```bash
 chmod +x EftViewer.Desktop
