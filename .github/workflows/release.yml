@@ -58,10 +58,14 @@ jobs:
             version="${{ github.ref_name }}"
             version="${version#v}"
             app="EftViewer.app"
-            mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
+            mkdir -p "$app/Contents/MacOS"
+            # Copy the published output but keep debug symbols out of the bundle.
             cp -R publish/. "$app/Contents/MacOS/"
+            rm -f "$app/Contents/MacOS/"*.pdb
             chmod +x "$app/Contents/MacOS/EftViewer.Desktop"
             sed "s/@VERSION@/${version}/g" .github/macos/Info.plist > "$app/Contents/Info.plist"
+            # Fail loudly if the executable name ever drifts from CFBundleExecutable.
+            test -x "$app/Contents/MacOS/EftViewer.Desktop"
             # ditto preserves bundle structure/symlinks/resource forks; plain zip can mangle .app bundles.
             ditto -c -k --sequesterRsrc --keepParent "$app" "$archive"
           else
