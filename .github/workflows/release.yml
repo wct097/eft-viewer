@@ -48,12 +48,24 @@ jobs:
       - name: Package
         shell: bash
         run: |
-          cd publish
           archive="EftViewer-${{ github.ref_name }}-${{ matrix.rid }}.zip"
           if [ "${{ runner.os }}" = "Windows" ]; then
-            7z a "../$archive" ./*
+            ( cd publish && 7z a "../$archive" ./* )
+          elif [ "${{ runner.os }}" = "macOS" ]; then
+            # Wrap the published binary in a proper .app bundle so Finder can
+            # launch it by double-click. A bare Mach-O executable triggers the
+            # "choose an application" prompt and cannot be opened from Finder.
+            version="${{ github.ref_name }}"
+            version="${version#v}"
+            app="EftViewer.app"
+            mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
+            cp -R publish/. "$app/Contents/MacOS/"
+            chmod +x "$app/Contents/MacOS/EftViewer.Desktop"
+            sed "s/@VERSION@/${version}/g" .github/macos/Info.plist > "$app/Contents/Info.plist"
+            # ditto preserves bundle structure/symlinks/resource forks; plain zip can mangle .app bundles.
+            ditto -c -k --sequesterRsrc --keepParent "$app" "$archive"
           else
-            zip -r "../$archive" ./*
+            ( cd publish && zip -r "../$archive" ./* )
           fi
 
       - name: Upload artifact
