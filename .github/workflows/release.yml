@@ -66,6 +66,14 @@ jobs:
             sed "s/@VERSION@/${version}/g" .github/macos/Info.plist > "$app/Contents/Info.plist"
             # Fail loudly if the executable name ever drifts from CFBundleExecutable.
             test -x "$app/Contents/MacOS/EftViewer.Desktop"
+            # Ad-hoc sign the whole bundle. Without a signature, Apple Silicon
+            # Gatekeeper treats a quarantined download as "damaged" and blocks
+            # even the right-click -> Open escape hatch. An ad-hoc signature
+            # downgrades that to the standard "unidentified developer" prompt,
+            # which users can clear with right-click -> Open. (Full notarization
+            # — the only way to remove the prompt entirely — is tracked separately.)
+            codesign --force --deep --sign - "$app"
+            codesign --verify --strict --verbose=2 "$app"
             # ditto preserves bundle structure/symlinks/resource forks; plain zip can mangle .app bundles.
             ditto -c -k --sequesterRsrc --keepParent "$app" "$archive"
           else
